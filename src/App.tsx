@@ -1,21 +1,8 @@
-import { useEffect, useState } from 'react'
-import { fetchOA } from './services/oaService'
-import type { OA } from './mocks/mockOA'
+import { useOA } from './hooks/useOA'
 import './App.css'
 
 function App() {
-  const [items, setItems] = useState<OA[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-    fetchOA('CL')
-      .then((result) => setItems(result.items))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [])
+  const { items, loading, error } = useOA('CL');
 
   return (
     <div className='app-wrapper'>
