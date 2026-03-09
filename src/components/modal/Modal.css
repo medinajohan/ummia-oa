@@ -1,0 +1,20 @@
+.modal {
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  max-width: 520px;
+  width: 90vw;
+  background: #1e1e1e;
+  color: inherit;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.modal::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+

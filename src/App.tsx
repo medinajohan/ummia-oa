@@ -1,5 +1,8 @@
 import { useOA } from "./hooks/useOA";
 import "./App.css";
+import { useState } from "react";
+import { OAForm } from "./components/form/OAForm";
+import { Modal } from "./components/modal/Modal";
 
 function App() {
   const {
@@ -15,6 +18,8 @@ function App() {
     reset,
   } = useOA("CL");
 
+  const [showForm, setShowForm] = useState(false);
+
   return (
     <div className="app-wrapper">
       <div className="app-content">
@@ -22,6 +27,9 @@ function App() {
 
         {/* Refetch and reset buttons */}
         <div className="app-buttons">
+          <button onClick={() => setShowForm(true)}>
+            Nuevo OA
+          </button>
           <button onClick={refetch} disabled={loading}>
             Recargar
           </button>
@@ -56,6 +64,19 @@ function App() {
             ))}
           </select>
         </div>
+
+        {/* Create OA Form */}
+        <Modal open={showForm} onClose={() => setShowForm(false)}>
+          <OAForm
+            country="CL"
+            creating={false}
+            onSubmit={async (input) => {
+              console.log(input);
+              setShowForm(false);
+            }}
+            onCancel={() => setShowForm(false)}
+          />
+        </Modal>
 
         {/* Errors and loading */}
         {error && <p className="app-error">Error: {error}</p>}

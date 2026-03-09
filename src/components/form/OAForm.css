@@ -1,0 +1,129 @@
+.oa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.oa-form__title {
+  margin: 0;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.oa-form__submit-error {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  background: #5c1a1a;
+  border: 1px solid #a33;
+  border-radius: 6px;
+  color: #fbb;
+  font-size: 0.85rem;
+}
+
+.oa-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.oa-form__field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #aaa;
+}
+
+.oa-form__field input,
+.oa-form__field textarea,
+.oa-form__field select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #2a2a2a;
+  color: inherit;
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.oa-form__field input:focus,
+.oa-form__field textarea:focus,
+.oa-form__field select:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.input--error {
+  border-color: #e55 !important;
+}
+
+.field-error {
+  font-size: 0.78rem;
+  color: #f88;
+}
+
+.oa-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.oa-form__toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 0.45rem 1rem;
+  border: 1px solid #444;
+  background: transparent;
+  color: #888;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn--active {
+  border-color: #6fcf97;
+  background: #1a3a2a;
+  color: #6fcf97;
+}
+
+.toggle-btn--inactive {
+  border-color: #999;
+  background: #3a3a3a;
+  color: #ccc;
+}
+
+.oa-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid #555;
+  color: #aaa;
+}
+
+.btn-cancel:hover {
+  border-color: #888;
+  color: #ddd;
+}
+
+.btn-submit {
+  background: #646cff;
+  color: #fff;
+  border: 1px solid #646cff;
+}
+
+.btn-submit:hover {
+  background: #535bf2;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
