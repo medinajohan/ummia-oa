@@ -11,12 +11,24 @@ function App() {
     setFilters,
     hasMore,
     loadMore,
+    refetch,
+    reset,
   } = useOA("CL");
 
   return (
     <div className="app-wrapper">
       <div className="app-content">
         <div className="app-header">Ummia OA</div>
+
+        {/* Refetch and reset buttons */}
+        <div className="app-buttons">
+          <button onClick={refetch} disabled={loading}>
+            Recargar
+          </button>
+          <button onClick={reset} disabled={loading}>
+            Resetear
+          </button>
+        </div>
 
         {/* Filters */}
         <div className="app-filters">

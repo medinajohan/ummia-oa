@@ -21,6 +21,7 @@ type Action =
   | { type: "FETCH_SUCCESS"; items: OA[]; nextToken: string | null }
   | { type: "FETCH_ERROR"; error: string }
   | { type: "SET_FILTERS"; filters: Partial<OAFilters> }
+  | { type: "REFETCH" }
   | { type: "RESET" };
 
 const initialState: State = {
@@ -49,6 +50,8 @@ function reducer(state: State, action: Action): State {
         ...state,
         filters: { ...state.filters, ...action.filters },
       };
+    case "REFETCH":
+      return { ...initialState, filters: state.filters };
     case "RESET":
       return initialState;
     default:
@@ -110,6 +113,16 @@ export function useOA(country: string) {
     }
   }, [state.nextToken, state.loading, loadPage]);
 
+  const refetch = useCallback(() => {
+    dispatch({ type: "REFETCH" });
+    loadPage("PAGE_1");
+  }, [loadPage]);
+
+  const reset = useCallback(() => {
+    dispatch({ type: "RESET" });
+    loadPage("PAGE_1");
+  }, [loadPage]);
+
   return {
     items,
     loading: state.loading,
@@ -119,5 +132,7 @@ export function useOA(country: string) {
     hasMore: state.nextToken !== null,
     setFilters,
     loadMore,
+    refetch,
+    reset,
   };
 }
