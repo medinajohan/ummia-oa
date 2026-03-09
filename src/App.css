@@ -8,12 +8,11 @@
 .app-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
 }
 
 .app-header {
+  text-align: center;
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
@@ -40,11 +39,49 @@
 .app-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #000;
+  font-size: 0.9rem;
 }
 
-.app-table th, .app-table td {
-  border: 1px solid #000;
-  padding: 0.5rem;
+.app-table th {
   text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 2px solid #444;
+  font-weight: 600;
+  white-space: nowrap;
 }
+
+.app-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #333;
+}
+
+.app-table tbody tr:hover {
+  background: rgba(100, 108, 255, 0.06);
+}
+
+.app-table code {
+  font-size: 0.85rem;
+  background: rgba(100, 108, 255, 0.12);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+
+.app-filters {
+  display: flex;
+  justify-content: end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.app-filters select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-width: 180px;
+}
+

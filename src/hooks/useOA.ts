@@ -5,6 +5,7 @@ import {
   getLatestActiveByCode,
   applyFilters,
   type OAFilters,
+  extractFilterOptions,
 } from "../utils/oaUtils";
 
 type State = {
@@ -94,9 +95,21 @@ export function useOA(country: string) {
     [deduplicated, state.filters],
   );
 
+  const filterOptions = useMemo(
+    () => extractFilterOptions(deduplicated),
+    [deduplicated],
+  );
+
+  const setFilters = useCallback((filters: Partial<OAFilters>) => {
+    dispatch({ type: "SET_FILTERS", filters });
+  }, []);
+
   return {
     items,
     loading: state.loading,
     error: state.error,
+    filters: state.filters,
+    filterOptions,
+    setFilters,
   };
 }

@@ -27,3 +27,9 @@ export function applyFilters(items: OA[], filters: OAFilters): OA[] {
     return true;
   });
 }
+
+export function extractFilterOptions(items: OA[]) {
+  const subjects = [...new Set(items.map((oa) => oa.asignatura))].sort();
+  const levels = [...new Set(items.map((oa) => oa.nivel))].sort();
+  return { subjects, levels };
+}
