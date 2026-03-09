@@ -104,12 +104,20 @@ export function useOA(country: string) {
     dispatch({ type: "SET_FILTERS", filters });
   }, []);
 
+  const loadMore = useCallback(() => {
+    if (state.nextToken && !state.loading) {
+      loadPage(state.nextToken);
+    }
+  }, [state.nextToken, state.loading, loadPage]);
+
   return {
     items,
     loading: state.loading,
     error: state.error,
     filters: state.filters,
     filterOptions,
+    hasMore: state.nextToken !== null,
     setFilters,
+    loadMore,
   };
 }

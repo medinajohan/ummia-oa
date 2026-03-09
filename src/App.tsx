@@ -2,8 +2,16 @@ import { useOA } from "./hooks/useOA";
 import "./App.css";
 
 function App() {
-  const { items, loading, error, filters, filterOptions, setFilters } =
-    useOA("CL");
+  const {
+    items,
+    loading,
+    error,
+    filters,
+    filterOptions,
+    setFilters,
+    hasMore,
+    loadMore,
+  } = useOA("CL");
 
   return (
     <div className="app-wrapper">
@@ -37,11 +45,14 @@ function App() {
           </select>
         </div>
 
-        {loading && <p className="app-loading">Cargando...</p>}
+        {/* Errors and loading */}
         {error && <p className="app-error">Error: {error}</p>}
+        {loading && <p className="app-loading">Cargando...</p>}
         {!loading && !error && items.length === 0 && (
-          <p className="app-no-records">No hay registros.</p>
+          <p className="app-empty">No hay registros que coincidan..</p>
         )}
+
+        {/* Table */}
         {items.length > 0 && (
           <table className="app-table">
             <thead>
@@ -62,13 +73,26 @@ function App() {
                   <td>{oa.descripcion}</td>
                   <td>{oa.nivel}</td>
                   <td>{oa.asignatura}</td>
-                  <td>{oa.estado}</td>
+                  <td>
+                    <span
+                      className={`badge ${oa.estado === "ACTIVO" ? "badge--active" : "badge--inactive"}`}
+                    >
+                      {oa.estado}
+                    </span>
+                  </td>
                   <td>{oa.version}</td>
                   <td>{new Date(oa.updatedAt).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+        )}
+
+        {/* Load more button */}
+        {hasMore && !loading && (
+          <button className="load-more" onClick={loadMore}>
+            Cargar más
+          </button>
         )}
       </div>
     </div>
