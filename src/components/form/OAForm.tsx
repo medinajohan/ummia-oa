@@ -4,6 +4,7 @@ import "./OAForm.css";
 
 type FormErrors = Partial<Record<keyof CreateOAInput, string>>;
 
+const CODE_PATTERN = /^[A-Z]{3}-\d[BM]-\d{2}$/;
 const LEVELS = ["1B", "2B", "3B", "4B", "1M", "2M", "3M", "4M"];
 const SUBJECTS = [
   "Matemática",
@@ -34,8 +35,37 @@ type Props = {
   onCancel: () => void;
 };
 
+function validate(form: CreateOAInput): FormErrors {
+  const errors: FormErrors = {};
+
+  if (!form.codigo.trim()) {
+    errors.codigo = "El código es requerido";
+  } else if (!CODE_PATTERN.test(form.codigo)) {
+    errors.codigo = "Formato inválido. Ej: MAT-1B-01";
+  }
+
+  if (!form.descripcion.trim()) {
+    errors.descripcion = "La descripción es requerida";
+  } else if (form.descripcion.trim().length < 5) {
+    errors.descripcion = "Mínimo 5 caracteres";
+  }
+
+  if (!form.nivel) {
+    errors.nivel = "Selecciona un nivel";
+  }
+
+  if (!form.asignatura) {
+    errors.asignatura = "Selecciona una asignatura";
+  }
+
+  return errors;
+}
+
 export function OAForm({ country, creating, onSubmit, onCancel }: Props) {
-  const [form, setForm] = useState<CreateOAInput>({ ...EMPTY_FORM, pais: country });
+  const [form, setForm] = useState<CreateOAInput>({
+    ...EMPTY_FORM,
+    pais: country,
+  });
   const [estado, setEstado] = useState<OAEstado>("ACTIVO");
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Set<string>>(new Set());
@@ -54,6 +84,27 @@ export function OAForm({ country, creating, onSubmit, onCancel }: Props) {
     async (e: React.FormEvent) => {
       e.preventDefault();
       setSubmitError(null);
+      const validationErrors = validate(form);
+      setErrors(validationErrors);
+
+      const allFields: (keyof CreateOAInput)[] = [
+        "codigo",
+        "descripcion",
+        "nivel",
+        "asignatura",
+      ];
+      setTouched(new Set(allFields));
+
+      if (Object.keys(validationErrors).length > 0) return;
+
+      try {
+        await onSubmit({ ...form, estado });
+        setForm({ ...EMPTY_FORM, pais: country });
+        setEstado("ACTIVO");
+        setTouched(new Set());
+      } catch {
+        setSubmitError("No se pudo crear el OA. Intenta nuevamente.");
+      }
     },
     [form, estado, country, onSubmit],
   );

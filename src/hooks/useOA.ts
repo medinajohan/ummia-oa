@@ -1,6 +1,6 @@
-import { useReducer, useMemo, useCallback, useEffect } from "react";
-import type { OA } from "../mocks/mockOA";
-import { fetchOA } from "../services/oaService";
+import { useReducer, useMemo, useCallback, useEffect, useRef } from "react";
+import type { CreateOAInput, OA } from "../mocks/mockOA";
+import { createOAService, fetchOA } from "../services/oaService";
 import {
   getLatestActiveByCode,
   applyFilters,
@@ -14,6 +14,7 @@ type State = {
   loading: boolean;
   error: string | null;
   filters: OAFilters;
+  creating: boolean;
 };
 
 type Action =
@@ -22,7 +23,10 @@ type Action =
   | { type: "FETCH_ERROR"; error: string }
   | { type: "SET_FILTERS"; filters: Partial<OAFilters> }
   | { type: "REFETCH" }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "OPTIMISTIC_ADD"; item: OA }
+  | { type: "OPTIMISTIC_CONFIRM"; tempId: string; item: OA }
+  | { type: "OPTIMISTIC_ROLLBACK"; tempId: string; error: string };
 
 const initialState: State = {
   rawItems: [],
@@ -30,6 +34,7 @@ const initialState: State = {
   loading: false,
   error: null,
   filters: { subject: "", level: "" },
+  creating: false,
 };
 
 function reducer(state: State, action: Action): State {
@@ -54,6 +59,27 @@ function reducer(state: State, action: Action): State {
       return { ...initialState, filters: state.filters };
     case "RESET":
       return initialState;
+    case "OPTIMISTIC_ADD":
+      return {
+        ...state,
+        creating: true,
+        rawItems: [action.item, ...state.rawItems],
+      };
+    case "OPTIMISTIC_CONFIRM":
+      return {
+        ...state,
+        creating: false,
+        rawItems: state.rawItems.map((oa) =>
+          oa.id === action.tempId ? action.item : oa,
+        ),
+      };
+    case "OPTIMISTIC_ROLLBACK":
+      return {
+        ...state,
+        creating: false,
+        error: action.error,
+        rawItems: state.rawItems.filter((oa) => oa.id !== action.tempId),
+      };
     default:
       return state;
   }
@@ -123,6 +149,38 @@ export function useOA(country: string) {
     loadPage("PAGE_1");
   }, [loadPage]);
 
+  const idCounter = useRef(0);
+
+  const create = useCallback(async (input: CreateOAInput) => {
+    const tempId = `temp-${Date.now()}-${++idCounter.current}`;
+    const optimistic: OA = {
+      id: tempId,
+      codigo: input.codigo,
+      descripcion: input.descripcion,
+      nivel: input.nivel,
+      asignatura: input.asignatura,
+      pais: input.pais,
+      estado: input.estado ?? "ACTIVO",
+      version: 0,
+      updatedAt: new Date().toISOString(),
+      createdBy: input.createdBy ?? `user_${input.pais.toLowerCase()}`,
+    };
+
+    dispatch({ type: "OPTIMISTIC_ADD", item: optimistic });
+
+    try {
+      const created = await createOAService(input);
+      dispatch({ type: "OPTIMISTIC_CONFIRM", tempId, item: created });
+    } catch (err) {
+      dispatch({
+        type: "OPTIMISTIC_ROLLBACK",
+        tempId,
+        error: err instanceof Error ? err.message : "Error al crear OA",
+      });
+      throw err;
+    }
+  }, []);
+
   return {
     items,
     loading: state.loading,
@@ -130,9 +188,11 @@ export function useOA(country: string) {
     filters: state.filters,
     filterOptions,
     hasMore: state.nextToken !== null,
+    creating: state.creating,
     setFilters,
     loadMore,
     refetch,
     reset,
+    create,
   };
 }

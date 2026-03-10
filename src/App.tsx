@@ -4,6 +4,8 @@ import { useState } from "react";
 import { OAForm } from "./components/form/OAForm";
 import { Modal } from "./components/modal/Modal";
 
+const COUNTRY = "CL";
+
 function App() {
   const {
     items,
@@ -16,7 +18,9 @@ function App() {
     loadMore,
     refetch,
     reset,
-  } = useOA("CL");
+    creating,
+    create,
+  } = useOA(COUNTRY);
 
   const [showForm, setShowForm] = useState(false);
 
@@ -68,10 +72,10 @@ function App() {
         {/* Create OA Form */}
         <Modal open={showForm} onClose={() => setShowForm(false)}>
           <OAForm
-            country="CL"
-            creating={false}
+            country={COUNTRY}
+            creating={creating}
             onSubmit={async (input) => {
-              console.log(input);
+              await create(input);
               setShowForm(false);
             }}
             onCancel={() => setShowForm(false)}
