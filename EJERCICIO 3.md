@@ -1,3 +1,5 @@
+## ESCALABILIDAD Y PERFORMANCE
+
 - ¿Qué haría si hay 100.000 OA por país?
 Implementación de buenas practicas en el uso de muchos datos como la paginación, filtros usando los GSIs del ejercicio 2 y es posible hacer una virtualización desde el frontend.
 
